@@ -98,11 +98,3 @@ module.exports = {
   change,
   reset,
 };
-
-// "init": "mate-scripts init",
-// "start": "mate-scripts start",
-// "lint": "mate-scripts lint",
-// "test:only": "mate-scripts test",
-// "update": "mate-scripts update",
-// "postinstall": "npm run update",
-// "test": "npm run lint && npm run test:only"
