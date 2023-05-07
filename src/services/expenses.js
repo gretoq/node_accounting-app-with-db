@@ -1,40 +1,77 @@
 'use strict';
 
-const { getNewId } = require('../utils/helpers');
+const { Expense } = require('../models/Expense');
+const { Op } = require('sequelize');
 
-let expenses = [];
+const getAll = async(filters) => {
+  const {
+    userId,
+    categories,
+    to,
+    from,
+  } = filters;
+  const where = {};
 
-const getAll = () => {
-  return expenses;
+  if (userId) {
+    where.userId = userId;
+  }
+
+  if (categories) {
+    where.category = {
+      [Op.in]: Array.isArray(categories)
+        ? categories
+        : [categories],
+    };
+  } else {
+    where.category = {
+      [Op.not]: null,
+    };
+  }
+
+  if (from) {
+    where.spentAt = {
+      [Op.gte]: from,
+    };
+  }
+
+  if (to) {
+    where.spentAt = {
+      ...where.spentAt,
+      [Op.lte]: to,
+    };
+  }
+
+  return Expense.findAll({
+    where,
+    order: ['id'],
+  });
 };
 
 const getById = (expenseId) => {
-  const foundExpense = expenses.find(({ id }) => id === +expenseId);
-
-  return foundExpense || null;
+  return Expense.findByPk(+expenseId);
 };
 
 const create = (expenseBody) => {
-  const newExpense = {
-    id: getNewId(expenses),
-    ...expenseBody,
-  };
-
-  expenses.push(newExpense);
-
-  return newExpense;
+  return Expense.create({ ...expenseBody });
 };
 
 const remove = (expenseId) => {
-  expenses = expenses.filter(({ id }) => id !== +expenseId);
+  return Expense.destroy({
+    where: {
+      id: expenseId,
+    },
+  });
 };
 
-const update = (expense, expenseBody) => {
-  Object.assign(expense, expenseBody);
-};
-
-const reset = () => {
-  expenses = [];
+const update = (expenseId, expenseBody) => {
+  return Expense.update(
+    { ...expenseBody },
+    {
+      where: {
+        id: expenseId,
+      },
+    }
+  );
 };
 
 module.exports = {
@@ -43,5 +80,4 @@ module.exports = {
   create,
   remove,
   update,
-  reset,
 };

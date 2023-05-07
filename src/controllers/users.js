@@ -2,15 +2,15 @@
 
 const userService = require('../services/users');
 
-const getAll = (req, res) => {
-  const users = userService.getAll();
+const getAll = async(req, res) => {
+  const users = await userService.getAll();
 
   res.send(users);
 };
 
-const getOne = (req, res) => {
+const getOne = async(req, res) => {
   const { userId } = req.params;
-  const foundUser = userService.getById(userId);
+  const foundUser = await userService.getById(userId);
 
   if (!foundUser) {
     return res.sendStatus(404);
@@ -19,35 +19,35 @@ const getOne = (req, res) => {
   res.send(foundUser);
 };
 
-const add = (req, res) => {
+const add = async(req, res) => {
   const { name } = req.body;
 
   if (!name) {
     return res.sendStatus(400);
   }
 
-  const newUser = userService.create(req.body);
+  const newUser = await userService.create(name);
 
   res.status(201);
   res.send(newUser);
 };
 
-const remove = (req, res) => {
+const remove = async(req, res) => {
   const { userId } = req.params;
-  const foundUser = userService.getById(userId);
+  const foundUser = await userService.getById(userId);
 
   if (!foundUser) {
     return res.sendStatus(404);
   }
 
-  userService.remove(userId);
+  await userService.remove(userId);
   res.sendStatus(204);
 };
 
-const change = (req, res) => {
+const change = async(req, res) => {
   const { userId } = req.params;
   const { name } = req.body;
-  const foundUser = userService.getById(userId);
+  const foundUser = await userService.getById(userId);
 
   if (!foundUser) {
     return res.sendStatus(404);
@@ -57,11 +57,14 @@ const change = (req, res) => {
     return res.sendStatus(400);
   }
 
-  userService.update(userId, req.body);
-  res.send(foundUser);
+  await userService.update(userId, name);
+
+  const updatedUser = await userService.getById(userId);
+
+  res.send(updatedUser);
 };
 
-const reset = () => userService.reset();
+// const reset = () => userService.reset();
 
 module.exports = {
   getAll,
@@ -69,5 +72,5 @@ module.exports = {
   add,
   remove,
   change,
-  reset,
+  // reset,
 };

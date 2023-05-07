@@ -5,8 +5,8 @@ const express = require('express');
 const { router: expensesRouter } = require('./routes/expenses');
 const { router: usersRouter } = require('./routes/users');
 
-const expenseController = require('./controllers/expenses');
-const userController = require('./controllers/users');
+// const expenseController = require('./controllers/expenses');
+// const userController = require('./controllers/users');
 
 function createServer() {
   const app = express();
@@ -15,8 +15,8 @@ function createServer() {
   app.use('/expenses', expensesRouter);
   app.use('/users', usersRouter);
 
-  expenseController.reset();
-  userController.reset();
+  // expenseController.reset();
+  // userController.reset();
 
   return app;
 }

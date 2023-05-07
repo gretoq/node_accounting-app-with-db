@@ -1,41 +1,65 @@
 'use strict';
 
-const { getNewId } = require('../utils/helpers');
+const { User } = require('../models/User');
+// const { getNewId } = require('../utils/helpers');
 
-let users = [];
+// let users = [];
 
 const getAll = () => {
-  return users;
+  return User.findAll({
+    order: ['id'],
+  });
+
+  // return users;
 };
 
 const getById = (userId) => {
-  const foundUser = users.find(({ id }) => id === +userId);
+  return User.findByPk(userId);
 
-  return foundUser;
+  // const foundUser = users.find(({ id }) => id === +userId);
+
+  // return foundUser;
 };
 
-const create = (userBody) => {
-  const newUser = {
-    id: getNewId(users),
-    ...userBody,
-  };
+const create = (name) => {
+  return User.create({ name });
 
-  users.push(newUser);
+  // const newUser = {
+  //   id: getNewId(users),
+  //   ...userBody,
+  // };
 
-  return newUser;
+  // users.push(newUser);
+
+  // return newUser;
 };
 
 const remove = (userId) => {
-  users = users.filter(({ id }) => id !== +userId);
+  return User.destroy({
+    where: {
+      id: userId,
+    },
+  });
+
+  // users = users.filter(({ id }) => id !== +userId);
 };
 
-const update = (userId, userBody) => {
-  Object.assign(getById(userId), { ...userBody });
+const update = (userId, name) => {
+  return User.update(
+    { name },
+    {
+      where: {
+        id: userId,
+      },
+    },
+  );
+
+  // Object.assign(getById(userId), { ...userBody });
 };
 
-const reset = () => {
-  users = [];
-};
+// const reset = () => {
+//   users = [];
+// };
 
 module.exports = {
   getAll,
@@ -43,5 +67,5 @@ module.exports = {
   create,
   remove,
   update,
-  reset,
+  // reset,
 };

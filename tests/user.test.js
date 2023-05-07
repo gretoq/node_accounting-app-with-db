@@ -2,14 +2,16 @@
 
 const supertest = require('supertest');
 const { createServer } = require('../src/createServer');
+const { setupDatabase } = require('../src/utils/setupDB');
 
 describe('User', () => {
   let server;
   let api;
 
-  beforeEach(() => {
+  beforeEach(async() => {
     server = createServer();
     api = supertest(server);
+    await setupDatabase();
   });
 
   describe('createUser', () => {
@@ -140,7 +142,7 @@ describe('User', () => {
           name,
         });
 
-      const newName = 'Jane Doe';
+      const newName = 'Jane asdf';
 
       const response = await api
         .patch(`/users/${createdUser.body.id}`)
